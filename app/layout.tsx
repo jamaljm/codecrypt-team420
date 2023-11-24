@@ -52,14 +52,10 @@ const interFont = Inter({
   variable: "--font-inter",
 });
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "Feedback",
-  description: "Feedback - Your magical  Feddback creator!",
+  title: "Foodo",
+  description: "foofo",
 };
 
 export default function RootLayout({

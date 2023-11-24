@@ -68,7 +68,7 @@ export default async function Index() {
         <div className="relative flex gap-12 px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div className="max-w-lg bg-red-50 p-12 rounded-3xl mx-auto text-center lg:mx-0 lg:max-w-xl lg:text-left">
             <p className="text-base font-bold font-body1 text-red-900">
-              Use “FIT40” coupon to get 40% flat discount
+              Your virtual restaurant is ready in minutes
             </p>
             <h1 className="mt-3 text-4xl font-bold font-body4 text-[#431414] sm:mt-8 sm:text-5xl xl:text-6xl">
               Your virtual restaurant is ready in minutes

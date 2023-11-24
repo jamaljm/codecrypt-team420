@@ -26,7 +26,20 @@ import AddStore from "./AddStore";
 import { supabase } from "../utils/supabase/client";
 import { useAuth } from "../Authcontext";
 import router, { useRouter } from "next/router";
-import Qrcode from "./Qrcode";
+import { database, storage } from "../firebase";
+
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
 
 type Shop = {
   shop_name: string;
@@ -48,20 +61,25 @@ export default function Dashboard() {
   const [shops, setShops] = useState<Shop[]>([]);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
 
+
   const { user, login, loging } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase
-          .from("shop")
-          .select("*")
-          .eq("shop_email", user.email);
-
-        if (error) {
-          console.error("Error fetching data from Supabase:", error);
-        } else {
-          setShops(data as Shop[]);
-        }
+         const q = query(
+           collection(database, "events"),
+           where("verified", "==", false)
+         );
+         const querySnapshot = await getDocs(q);
+         querySnapshot.forEach((event) => {
+           // console.log(event.id, " => ", event.data());
+         });
+         const filteredData = querySnapshot.docs.map((doc) => ({
+           ...(doc.data() as Shop),
+         }));
+         // .filter((data) => data.verified);
+          setShops(filteredData as Shop[]);
+      
       } catch (error) {
         console.error("Error:", error);
       }
@@ -151,7 +169,7 @@ export default function Dashboard() {
             <div className="flex flex-col justify-between flex-1 h-full px-4">
               <div className="space-y-4">
 
-                {/* <nav className="flex-1 space-y-1">
+                <nav className="flex-1 space-y-1">
                   <a
                     href="/dashboard"
                     title=""
@@ -160,17 +178,17 @@ export default function Dashboard() {
                     <span className="text-lg mr-1">🏠</span>
                     Dashboard
                   </a>
-                  <a
+                  {/* <a
                     href="/summary"
                     title=""
                     className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 rounded-lg hover:bg-slate-100 group"
                   >
                     <span className="text-lg mr-1">📝</span>
                     Summary
-                  </a>
-                </nav> */}
-
-                {/* <div>
+                  </a> */}
+                </nav>
+{/* 
+                <div>
                   <p className="px-4 text-xs font-semibold tracking-widest text-gray-400 uppercase">
                     Services
                   </p>

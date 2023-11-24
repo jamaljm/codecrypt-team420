@@ -15,6 +15,17 @@ import { useState } from "react";
 import { database, storage } from "../firebase";
 import toast, { Toaster } from "react-hot-toast";
 import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 export default function AddStore() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -54,6 +65,31 @@ export default function AddStore() {
       }
     } catch (error) {
       console.error("Error:", error);
+    }
+  };
+
+  const handleAddDoc = async () => {
+    setLoading(true);
+
+    try {
+      const dbInstance = collection(database, "shop");
+      const volunteerDocRef = doc(dbInstance, user.email.toString());
+      await setDoc(volunteerDocRef, {
+        shop_name: name,
+        shop_id: domain,
+        shop_type: type,
+        shop_email: user.email,
+        shop_logo: image,
+        shop_product: product,
+      });
+      toast.success(" submission successfully!");
+
+      setLoading(false);
+      setsubmitdone(true);
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.error("error, ", error);
+      setLoading(false);
     }
   };
 
@@ -100,7 +136,7 @@ export default function AddStore() {
   };
   return (
     <div className="w-full">
-      <section className="relative w-full py-10 h-full bg-gray-900 sm:py-16 lg:py-24">
+      <section className="relative w-full py-10 h-full bg-gray-900 sm:py-16 lg:py-18">
         <div className="absolute inset-0">
           <img className="object-cover w-full h-full" src="/bg2.png" alt="" />
         </div>
@@ -149,7 +185,10 @@ export default function AddStore() {
                 />{" "}
                 Logo
               </label>
-              <Button className="bg-[#8f2525] mt-3 py-2 rounded-3xl font-body text-white">
+              <Button
+                onClick={handleAddDoc}
+                className="bg-[#8f2525] mt-3 py-2 rounded-3xl font-body text-white"
+              >
                 Submit
               </Button>
             </div>
