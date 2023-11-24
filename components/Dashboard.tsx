@@ -23,7 +23,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import AddStore from "./AddStore";
-import { supabase } from "../utils/supabase/client";
 import { useAuth } from "../Authcontext";
 import axios from "axios";
 import router, { useRouter } from "next/router";
@@ -41,14 +40,8 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-<<<<<<< HEAD
-=======
 import { set } from "firebase/database";
 import { afterEach } from "node:test";
-
-
-
->>>>>>> 5e26a1bcdebaa09c2c5c54a2c5a5515cc87c9689
 
 type Shop = {
   shop_name: string;
@@ -74,6 +67,7 @@ export default function Dashboard() {
   const [add, setAdd] = useState("upload");
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<any[]>([]);
 
   const { user, login, loging } = useAuth();
   useEffect(() => {
@@ -99,29 +93,31 @@ export default function Dashboard() {
 
     fetchData();
   }, []);
-  console.log(shops);
+
   useEffect(() => {
-    const fetchData_feedback = async () => {
-      console.log(shops[0]?.shop_id);
-
+    const fetchData = async () => {
       try {
-        console.log(shops[0]?.shop_id);
-        const { data, error } = await supabase
-          .from("feedback")
-          .select("*")
-          .eq("shop_id", shops[0]?.shop_id);
-
-        if (error) {
-          console.error("Error fetching data from Supabase:", error);
-        } else {
-          setFeedback(data as Feedback[]);
-        }
+        const q = query(
+          collection(database, "items"),
+          where("shop_email", "==", user.email)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((event) => {
+          // console.log(event.id, " => ", event.data());
+        });
+        const filteredData = querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as Shop),
+        }));
+        // .filter((data) => data.verified);
+        setItems(filteredData as any[]);
       } catch (error) {
         console.error("Error:", error);
       }
     };
-    fetchData_feedback();
-  }, [shops]);
+
+    fetchData();
+  }, []);
+  console.log(items);
 
   const handleFileInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -144,37 +140,53 @@ export default function Dashboard() {
       reader.readAsDataURL(selectedFile);
     }
   };
-  const handleUploadClick = () => {
+  const handleUploadClick = (file: any) => {
     setLoading(true);
-    axios
-      .post(
-        "https://768c-2409-40f3-1018-e638-1453-36eb-4464-2078.ngrok-free.app/extract-menu",
-        {
-          image_url:
-            image,
-        }
-      )
-      .then(async(response: any) => {
-        console.log(response);
-        toast.success("menu created");
+    const metadata = {
+      contentType: "image/png",
+    };
+    if (file) {
+      const accidentImagesRef = ref(storage, `banner/jama.png`);
+      setAdd("uploading");
 
-        const dbInst = collection(database, "items");
-        const volunteerDocRef = doc(dbInst, user.email.toString());
-        await setDoc(volunteerDocRef, {
-          shop_email: user.email,
-          items: response.data,
-        });
-        
-        setLoading(false);
-      })
-      .catch((error: Error) => {
-        console.error("Error sending POST request:", error);
-        toast.error("Failed to send POST request");
-        setLoading(false);
+      uploadBytes(accidentImagesRef, file, metadata).then((snapshot) => {
+        getDownloadURL(accidentImagesRef)
+          .then((url) => {
+            setAdd("uploaded");
+            toast.success("Image uploaded");
+            axios
+              .post(
+                "https://0f3c-2409-40f3-2b-8243-431-a168-c3a9-795f.ngrok-free.app/extract-menu",
+                {
+                  image_url: url,
+                }
+              )
+              .then(async (response: any) => {
+                console.log(response);
+                toast.success("menu created");
+
+                const dbInst = collection(database, "items");
+                const volunteerDocRef = doc(dbInst, user.email.toString());
+                await setDoc(volunteerDocRef, {
+                  shop_email: user.email,
+                  items: response.data,
+                });
+
+                setLoading(false);
+              })
+              .catch((error: Error) => {
+                console.error("Error sending POST request:", error);
+                toast.error("Failed to send POST request");
+                setLoading(false);
+              });
+          })
+          .catch((error) => {
+            setAdd("upload");
+            toast.error("Image uploading failed");
+          });
       });
     }
   };
-  const whatsappLink = `https://wa.me/919037106287?text=hey%20i%20just%20visited%20${shops[0]?.shop_id}`;
 
   return (
     <div className="flex flex-col w-full min-h-screen">
@@ -354,99 +366,29 @@ export default function Dashboard() {
                       </div>
 
                       <div className="grid grid-cols-1 mt-8 text-center sm:mt-12 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-6 sm:text-left">
-                        <div className="relative group">
-                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
-                            <img
-                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
-                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/breakfast.png"
-                              alt=""
-                            />
+                        {items[0].items.map((item: any) => (
+                          <div className="relative group">
+                            <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
+                              <img
+                                className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                                src={
+                                  item.image_url
+                                    ? item.image_url
+                                    : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D"
+                                }
+                                alt=""
+                              />
+                            </div>
+
+                            <h3 className="mt-5 text-lg font-body4 font-semibold  text-gray-900">
+                              {item.item_name}
+                            </h3>
+                            <p className="text-sm font-body1 text-gray-800 font-medium mt-1.5">
+                              ₹ {item.price}{" "}
+                            </p>
                           </div>
-
-                          <h3 className="mt-5 font-body1 text-lg font-bold text-gray-900">
-                            <a href="#" title="">
-                              Breakfast
-                              <span
-                                className="absolute inset-0"
-                                aria-hidden="true"
-                              ></span>
-                            </a>
-                          </h3>
-                          <p className="text-sm font-body text-gray-800 font-medium mt-1.5">
-                            $44
-                          </p>
-                        </div>
-
-                        <div className="relative group">
-                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
-                            <img
-                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
-                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/buffet-lunch.png"
-                              alt=""
-                            />
-                          </div>
-
-                          <h3 className="mt-5 text-lg font-bold text-gray-900">
-                            <a href="#" title="">
-                              Buffet Lunch
-                              <span
-                                className="absolute inset-0"
-                                aria-hidden="true"
-                              ></span>
-                            </a>
-                          </h3>
-                          <p className="text-xs text-gray-500 font-medium mt-1.5">
-                            38 Items available
-                          </p>
-                        </div>
-
-                        <div className="relative group">
-                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
-                            <img
-                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
-                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/snacks.png"
-                              alt=""
-                            />
-                          </div>
-
-                          <h3 className="mt-5 text-lg font-bold text-gray-900">
-                            <a href="#" title="">
-                              Snacks
-                              <span
-                                className="absolute inset-0"
-                                aria-hidden="true"
-                              ></span>
-                            </a>
-                          </h3>
-                          <p className="text-xs text-gray-500 font-medium mt-1.5">
-                            19 Items available
-                          </p>
-                        </div>
-
-                        <div className="relative group">
-                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
-                            <img
-                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
-                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/dinner.png"
-                              alt=""
-                            />
-                          </div>
-
-                          <h3 className="mt-5 text-lg font-bold text-gray-900">
-                            <a href="#" title="">
-                              Dinner
-                              <span
-                                className="absolute inset-0"
-                                aria-hidden="true"
-                              ></span>
-                            </a>
-                          </h3>
-                          <p className="text-xs text-gray-500 font-medium mt-1.5">
-                            31 Items available
-                          </p>
-                        </div>
+                        ))}
                       </div>
-
                       <div className="block mt-8 text-center md:hidden">
                         <a
                           href="#"

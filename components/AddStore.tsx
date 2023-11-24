@@ -9,7 +9,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
-import { supabase } from "../utils/supabase/client";
 import { useAuth } from "../Authcontext";
 import { useState } from "react";
 import { database, storage } from "../firebase";
