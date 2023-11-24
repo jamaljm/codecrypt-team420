@@ -144,42 +144,6 @@ export default function Dashboard() {
       reader.readAsDataURL(selectedFile);
     }
   };
-<<<<<<< HEAD
-  const handleUploadClick = (file: File) => {
-    const metadata = {
-      contentType: "image/png",
-    };
-    if (file) {
-      const accidentImagesRef = ref(storage, `banner/jama.png`);
-      setAdd("uploading");
-
-      uploadBytes(accidentImagesRef, file, metadata).then((snapshot) => {
-        getDownloadURL(accidentImagesRef)
-          .then((url) => {
-            setAdd("uploaded");
-            setImage(url);
-            toast.success("Image uploaded");
-            setLoading(true);
-            console.log(url);
-            axios
-              .post(
-                "https://768c-2409-40f3-1018-e638-1453-36eb-4464-2078.ngrok-free.app/extract-menu",
-                { image_url: url }
-              )
-              .then((response: any) => {
-                console.log(response);
-                toast.success("menu created");
-              })
-              .catch((error: Error) => {
-                console.error("Error sending POST request:", error);
-                toast.error("Failed to send POST request");
-              });
-          })
-          .catch((error) => {
-            setAdd("upload");
-            toast.error("Image uploading failed");
-          });
-=======
   const handleUploadClick = () => {
     setLoading(true);
     axios
@@ -207,7 +171,6 @@ export default function Dashboard() {
         console.error("Error sending POST request:", error);
         toast.error("Failed to send POST request");
         setLoading(false);
->>>>>>> 5e26a1bcdebaa09c2c5c54a2c5a5515cc87c9689
       });
     }
   };
