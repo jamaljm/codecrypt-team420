@@ -41,6 +41,14 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+<<<<<<< HEAD
+=======
+import { set } from "firebase/database";
+import { afterEach } from "node:test";
+
+
+
+>>>>>>> 5e26a1bcdebaa09c2c5c54a2c5a5515cc87c9689
 
 type Shop = {
   shop_name: string;
@@ -136,6 +144,7 @@ export default function Dashboard() {
       reader.readAsDataURL(selectedFile);
     }
   };
+<<<<<<< HEAD
   const handleUploadClick = (file: File) => {
     const metadata = {
       contentType: "image/png",
@@ -170,6 +179,35 @@ export default function Dashboard() {
             setAdd("upload");
             toast.error("Image uploading failed");
           });
+=======
+  const handleUploadClick = () => {
+    setLoading(true);
+    axios
+      .post(
+        "https://768c-2409-40f3-1018-e638-1453-36eb-4464-2078.ngrok-free.app/extract-menu",
+        {
+          image_url:
+            image,
+        }
+      )
+      .then(async(response: any) => {
+        console.log(response);
+        toast.success("menu created");
+
+        const dbInst = collection(database, "items");
+        const volunteerDocRef = doc(dbInst, user.email.toString());
+        await setDoc(volunteerDocRef, {
+          shop_email: user.email,
+          items: response.data,
+        });
+        
+        setLoading(false);
+      })
+      .catch((error: Error) => {
+        console.error("Error sending POST request:", error);
+        toast.error("Failed to send POST request");
+        setLoading(false);
+>>>>>>> 5e26a1bcdebaa09c2c5c54a2c5a5515cc87c9689
       });
     }
   };
