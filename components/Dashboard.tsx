@@ -11,7 +11,6 @@ import {
   TableCell,
   RadioGroup,
   Radio,
-  Input,
 } from "@nextui-org/react";
 import { Chip } from "@nextui-org/react";
 import {
@@ -42,7 +41,6 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { set } from "firebase/database";
 
 type Shop = {
   shop_name: string;
@@ -138,35 +136,42 @@ export default function Dashboard() {
       reader.readAsDataURL(selectedFile);
     }
   };
-  const handleUploadClick = () => {
-    setLoading(true);
-    axios
-      .post(
-        "https://768c-2409-40f3-1018-e638-1453-36eb-4464-2078.ngrok-free.app/extract-menu",
-        {
-          image_url:
-            image,
-        }
-      )
-      .then((response: any) => {
-        console.log(response);
-        toast.success("menu created");
-        
-        setLoading(false);
-      })
-      .catch((error: Error) => {
-        console.error("Error sending POST request:", error);
-        toast.error("Failed to send POST request");
-        setLoading(false);
+  const handleUploadClick = (file: File) => {
+    const metadata = {
+      contentType: "image/png",
+    };
+    if (file) {
+      const accidentImagesRef = ref(storage, `banner/jama.png`);
+      setAdd("uploading");
+
+      uploadBytes(accidentImagesRef, file, metadata).then((snapshot) => {
+        getDownloadURL(accidentImagesRef)
+          .then((url) => {
+            setAdd("uploaded");
+            setImage(url);
+            toast.success("Image uploaded");
+            setLoading(true);
+            console.log(url);
+            axios
+              .post(
+                "https://768c-2409-40f3-1018-e638-1453-36eb-4464-2078.ngrok-free.app/extract-menu",
+                { image_url: url }
+              )
+              .then((response: any) => {
+                console.log(response);
+                toast.success("menu created");
+              })
+              .catch((error: Error) => {
+                console.error("Error sending POST request:", error);
+                toast.error("Failed to send POST request");
+              });
+          })
+          .catch((error) => {
+            setAdd("upload");
+            toast.error("Image uploading failed");
+          });
       });
-  };
-  const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setImage(value);
+    }
   };
   const whatsappLink = `https://wa.me/919037106287?text=hey%20i%20just%20visited%20${shops[0]?.shop_id}`;
 
@@ -329,18 +334,144 @@ export default function Dashboard() {
 
                   <div className="flex flex-row py-7 justify-between items-center  mx-12 bg-red-50 rounded-3xl border-red-400 border-2 px-12  mt-8">
                     <h2 className="font-body2 text-xl">Upload your menu</h2>
-                    <Input
-                      onChange={handleChange}
-                        type="text"
-                        variant="bordered"
-                      className="block w-fit text-sm border-black text-red-700 font-body file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
+                    <label className=" items-center font-body1 text-black flex border-2 w-fit px-4 py-3 border-red-200 rounded-xl">
+                      <input
+                        onChange={(event) => handleFileInputChange(event)}
+                        type="file"
+                        className="block w-full text-sm text-red-700 font-body file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
                       />
-                      <Button
-                        isLoading={loading}
-                        onClick={handleUploadClick}
-                        className="file:py-2 bg-red-600 text-white font-body file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
-                      >Process</Button>
+                      {add}
+                    </label>{" "}
                   </div>
+
+                  <section className="py-12 sm:py-6 lg:py-10 bg-gray-50">
+                    <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+                      <div className="flex items-center justify-center text-center md:justify-between sm:text-left">
+                        <h2 className="text-2xl font-body1 font-bold text-gray-900 sm:text-3xl">
+                          Your shop menu{" "}
+                        </h2>
+                      </div>
+
+                      <div className="grid grid-cols-1 mt-8 text-center sm:mt-12 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-6 sm:text-left">
+                        <div className="relative group">
+                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
+                            <img
+                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/breakfast.png"
+                              alt=""
+                            />
+                          </div>
+
+                          <h3 className="mt-5 font-body1 text-lg font-bold text-gray-900">
+                            <a href="#" title="">
+                              Breakfast
+                              <span
+                                className="absolute inset-0"
+                                aria-hidden="true"
+                              ></span>
+                            </a>
+                          </h3>
+                          <p className="text-sm font-body text-gray-800 font-medium mt-1.5">
+                            $44
+                          </p>
+                        </div>
+
+                        <div className="relative group">
+                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
+                            <img
+                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/buffet-lunch.png"
+                              alt=""
+                            />
+                          </div>
+
+                          <h3 className="mt-5 text-lg font-bold text-gray-900">
+                            <a href="#" title="">
+                              Buffet Lunch
+                              <span
+                                className="absolute inset-0"
+                                aria-hidden="true"
+                              ></span>
+                            </a>
+                          </h3>
+                          <p className="text-xs text-gray-500 font-medium mt-1.5">
+                            38 Items available
+                          </p>
+                        </div>
+
+                        <div className="relative group">
+                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
+                            <img
+                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/snacks.png"
+                              alt=""
+                            />
+                          </div>
+
+                          <h3 className="mt-5 text-lg font-bold text-gray-900">
+                            <a href="#" title="">
+                              Snacks
+                              <span
+                                className="absolute inset-0"
+                                aria-hidden="true"
+                              ></span>
+                            </a>
+                          </h3>
+                          <p className="text-xs text-gray-500 font-medium mt-1.5">
+                            19 Items available
+                          </p>
+                        </div>
+
+                        <div className="relative group">
+                          <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
+                            <img
+                              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                              src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/categories/1/dinner.png"
+                              alt=""
+                            />
+                          </div>
+
+                          <h3 className="mt-5 text-lg font-bold text-gray-900">
+                            <a href="#" title="">
+                              Dinner
+                              <span
+                                className="absolute inset-0"
+                                aria-hidden="true"
+                              ></span>
+                            </a>
+                          </h3>
+                          <p className="text-xs text-gray-500 font-medium mt-1.5">
+                            31 Items available
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="block mt-8 text-center md:hidden">
+                        <a
+                          href="#"
+                          title=""
+                          className="inline-flex items-center p-1 -m-1 text-xs font-bold tracking-wide text-gray-400 uppercase transition-all duration-200 rounded hover:text-gray-900 focus:ring-2 focus:text-gray-900 focus:ring-gray-900 focus:ring-offset-2 focus:outline-none"
+                          role="button"
+                        >
+                          All Categories
+                          <svg
+                            className="w-4 h-4 ml-1.5 -mt-0.5"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M9 5l7 7-7 7"
+                            ></path>
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               </>
             )}
