@@ -29,7 +29,7 @@ export default function Login() {
       </div>
       <div className="absolute inset-0 bg-gray-900/20"></div>
 
-      <div className="relative max-w-lg px-4 mx-auto  sm:px-0">
+      <div className="relative  max-w-lg px-4 mx-auto  sm:px-0">
         <div className="overflow-hidden mb-5 bg-red-50 rounded-md shadow-md">
           <div className="px-4 py-6 sm:px-8 sm:py-7">
             <div className="text-center">

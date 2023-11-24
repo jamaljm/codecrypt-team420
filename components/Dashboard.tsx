@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import { useState } from "react";
 import {
   Table,
@@ -11,6 +11,7 @@ import {
   TableCell,
   RadioGroup,
   Radio,
+  Input,
 } from "@nextui-org/react";
 import { Chip } from "@nextui-org/react";
 import {
@@ -25,9 +26,11 @@ import {
 import AddStore from "./AddStore";
 import { supabase } from "../utils/supabase/client";
 import { useAuth } from "../Authcontext";
+import axios from "axios";
 import router, { useRouter } from "next/router";
 import { database, storage } from "../firebase";
-
+import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
+import toast, { Toaster } from "react-hot-toast";
 import {
   collection,
   addDoc,
@@ -39,13 +42,15 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-
+import { set } from "firebase/database";
 
 type Shop = {
   shop_name: string;
   shop_id: string;
   shop_type: string;
   shop_email: string;
+  shop_logo: string;
+  shop_product: string;
 };
 
 type Feedback = {
@@ -60,61 +65,114 @@ export default function Dashboard() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [shops, setShops] = useState<Shop[]>([]);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
-
+  const [add, setAdd] = useState("upload");
+  const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { user, login, loging } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       try {
-         const q = query(
-           collection(database, "events"),
-           where("verified", "==", false)
-         );
-         const querySnapshot = await getDocs(q);
-         querySnapshot.forEach((event) => {
-           // console.log(event.id, " => ", event.data());
-         });
-         const filteredData = querySnapshot.docs.map((doc) => ({
-           ...(doc.data() as Shop),
-         }));
-         // .filter((data) => data.verified);
-          setShops(filteredData as Shop[]);
-      
+        const q = query(
+          collection(database, "shop"),
+          where("shop_email", "==", user.email)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((event) => {
+          // console.log(event.id, " => ", event.data());
+        });
+        const filteredData = querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as Shop),
+        }));
+        // .filter((data) => data.verified);
+        setShops(filteredData as Shop[]);
       } catch (error) {
         console.error("Error:", error);
       }
     };
-   
+
     fetchData();
   }, []);
-      useEffect(() => {
-      const fetchData_feedback = async () => {
+  console.log(shops);
+  useEffect(() => {
+    const fetchData_feedback = async () => {
+      console.log(shops[0]?.shop_id);
+
+      try {
         console.log(shops[0]?.shop_id);
+        const { data, error } = await supabase
+          .from("feedback")
+          .select("*")
+          .eq("shop_id", shops[0]?.shop_id);
 
-        try {
-          console.log(shops[0]?.shop_id);
-          const { data, error } = await supabase
-            .from("feedback")
-            .select("*")
-            .eq("shop_id", shops[0]?.shop_id);
+        if (error) {
+          console.error("Error fetching data from Supabase:", error);
+        } else {
+          setFeedback(data as Feedback[]);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    fetchData_feedback();
+  }, [shops]);
 
-          if (error) {
-            console.error("Error fetching data from Supabase:", error);
-          } else {
-            setFeedback(data as Feedback[]);
-          }
-        } catch (error) {
-          console.error("Error:", error);
+  const handleFileInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      const image = new Image();
+
+      image.onload = async () => {
+        handleUploadClick(selectedFile);
+      };
+
+      // Load the selected file as an image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (e.target) {
+          image.src = e.target.result as string;
         }
       };
-      fetchData_feedback();
-    }, [shops]);
-  
-
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+  const handleUploadClick = () => {
+    setLoading(true);
+    axios
+      .post(
+        "https://768c-2409-40f3-1018-e638-1453-36eb-4464-2078.ngrok-free.app/extract-menu",
+        {
+          image_url:
+            image,
+        }
+      )
+      .then((response: any) => {
+        console.log(response);
+        toast.success("menu created");
+        
+        setLoading(false);
+      })
+      .catch((error: Error) => {
+        console.error("Error sending POST request:", error);
+        toast.error("Failed to send POST request");
+        setLoading(false);
+      });
+  };
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setImage(value);
+  };
   const whatsappLink = `https://wa.me/919037106287?text=hey%20i%20just%20visited%20${shops[0]?.shop_id}`;
 
   return (
     <div className="flex flex-col w-full min-h-screen">
+      <Toaster />
       <header className="bg-white border-b px-6 border-red-200">
         <div className="px-4 mx-auto">
           <div className="flex items-center justify-between h-16">
@@ -142,8 +200,16 @@ export default function Dashboard() {
 
             <div className="flex ml-6 xl:ml-0">
               <div className="flex items-center flex-shrink-0">
-                <img className="block w-auto h-8 bg-gray-300/60  lg:hidden" src="/logod.png" alt="" />
-                <img className="hidden w-auto h-12 lg:block" src="/logo.png" alt="" />
+                <img
+                  className="block w-auto h-8 bg-gray-300/60  lg:hidden"
+                  src="/logod.png"
+                  alt=""
+                />
+                <img
+                  className="hidden w-auto h-12 lg:block"
+                  src="/logo.png"
+                  alt=""
+                />
               </div>
             </div>
 
@@ -164,11 +230,10 @@ export default function Dashboard() {
       </header>
 
       <div className="flex flex-1 min-h-screen">
-        <div className="hidden bg-red-50 rounded-r-xl  min-h-screen xl:flex xl:w-64 xl:flex-col">
+        <div className="hidden bg-red-50 border-r-2 border-red-700 rounded-r-xl  min-h-screen xl:flex xl:w-64 xl:flex-col">
           <div className="flex flex-col pt-5 overflow-y-auto">
             <div className="flex flex-col justify-between flex-1 h-full px-4">
               <div className="space-y-4">
-
                 <nav className="flex-1 space-y-1">
                   <a
                     href="/dashboard"
@@ -187,7 +252,7 @@ export default function Dashboard() {
                     Summary
                   </a> */}
                 </nav>
-{/* 
+                {/* 
                 <div>
                   <p className="px-4 text-xs font-semibold tracking-widest text-gray-400 uppercase">
                     Services
@@ -238,104 +303,44 @@ export default function Dashboard() {
               <AddStore />
             ) : (
               <>
-                <div className="flex-2 min-h-screen w-[30%]">
-                  <div className="flex h-[47%] rounded-2xl bg-gray-800 flex-col ">
-                    <div className="flex-2 h-3/5 m-4 p-12 -mt-5">
-                      <Qrcode obj={whatsappLink} />
+                <div className="py-12 w-full bg-gray-50 sm:pt-16 lg:pt-12">
+                  <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+                    <div className="relative  bg-cover bg-center bg-no-repeat bg-[url(../public/bg3.jpg)] flex justify-center mx-auto overflow-hidden bg-red-600 max-w-7xl rounded-3xl">
+                      <div className="absolute top-0 left-0">
+                        <img
+                          className="w-16 md:w-24 lg:w-32 opacity-40 xl:w-full"
+                          src="https://landingfoliocom.imgix.net/store/collection/saasui/images/newsletter/3/ring-pattern.svg"
+                          alt=""
+                        />
+                      </div>
+
+                      <div className="relative px-8 py-12 md:p-16 xl:p-12">
+                        <div className="max-w-2xl mx-auto text-center">
+                          <h2 className="text-3xl font-semibold tracking-tight font-body4  text-white sm:text-4xl lg:text-5xl">
+                            {shops[0].shop_name}
+                          </h2>
+                          <p className="mt-3 text-lg font-body1 text-white">
+                            {shops[0].shop_type}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 justify-center items-center bg-slate-200 h-[40%] -mt-12 rounded-2xl">
-                    <div className="bg-slate-50 w-2/3 rounded-full  flex justify-center items-center h-14 border-black border">
-                      <span className="text-xl text-black font-body4  font-normal">
-                        <span className="mr-1 text-2xl rounded-full font-semibold text-green-500">
-                          {feedback.length}
-                        </span>{" "}
-                        Feedback
-                      </span>
-                    </div>{" "}
-                    {/* <div className="bg-slate-50 w-2/3 rounded-full  flex justify-center items-center h-14 border-black border">
-                      <span className="text-xl text-black font-body4  font-normal">
-                        <span className="mr-1 text-2xl rounded-full font-semibold text-red-500 ">
-                          12
-                        </span>{" "}
-                        Complaits
-                      </span>
-                    </div> */}
+
+                  <div className="flex flex-row py-7 justify-between items-center  mx-12 bg-red-50 rounded-3xl border-red-400 border-2 px-12  mt-8">
+                    <h2 className="font-body2 text-xl">Upload your menu</h2>
+                    <Input
+                      onChange={handleChange}
+                        type="text"
+                        variant="bordered"
+                      className="block w-fit text-sm border-black text-red-700 font-body file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
+                      />
+                      <Button
+                        isLoading={loading}
+                        onClick={handleUploadClick}
+                        className="file:py-2 bg-red-600 text-white font-body file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
+                      >Process</Button>
                   </div>
-                </div>
-                <div className=" h-full min-h-screen  w-[70%]">
-                  <Table
-                    color="default"
-                    selectionMode="single"
-                    defaultSelectedKeys={["2"]}
-                    aria-label="Example static collection table"
-                  >
-                    <TableHeader className="font-body1">
-                      <TableColumn className="font-body1">NAME</TableColumn>
-                      <TableColumn>PHONE NUMBER</TableColumn>
-                      <TableColumn>FEEDBACK</TableColumn>
-                      <TableColumn>SUMMARY</TableColumn>
-                    </TableHeader>
-                    <TableBody  className="font-body1">
-                      {feedback?.map((feedback) => (
-                        <TableRow  key={feedback.id} onClick={onOpen}>
-                          <TableCell className="font-body1">
-                            {feedback.user_name}
-                          </TableCell>
-                          <TableCell className="font-body1">
-                            {feedback.user}
-                          </TableCell>
-                          <TableCell>
-                            <Chip
-                              className="font-body1"
-                              variant="faded"
-                              color="default"
-                            >
-                              {feedback.emoji}{" "}
-                              {getRatingFromEmoji(feedback.emoji)}
-                            </Chip>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              onPress={onOpen}
-                              className="bg-blue-100 py-1 font-body1 rounded-full"
-                            >
-                              View Summary
-                            </Button>
-                            <Modal
-                              size="sm"
-                              isOpen={isOpen}
-                              onOpenChange={onOpenChange}
-                            >
-                              <ModalContent>
-                                {(onClose:any) => (
-                                  <>
-                                    <ModalHeader className="flex flex-col gap-1">
-Summary                                    </ModalHeader>
-                                    <ModalBody className="font-body1">
-                                      <p>{feedback.feed_summary}</p>
-                                    </ModalBody>
-                                    <ModalFooter>
-                                      <Button
-                                        color="danger"
-                                        variant="light"
-                                        onPress={onClose}
-                                      >
-                                        Close
-                                      </Button>
-                                      {/* <Button color="primary" onPress={onClose}>
-                                        Action
-                                      </Button> */}
-                                    </ModalFooter>
-                                  </>
-                                )}
-                              </ModalContent>
-                            </Modal>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
                 </div>
               </>
             )}
@@ -344,21 +349,4 @@ Summary                                    </ModalHeader>
       </div>
     </div>
   );
-}
-
-function getRatingFromEmoji(emoji: string): string {
-  switch (emoji) {
-    case "😍":
-      return "5/5";
-    case "😄":
-      return "4/5";
-    case "😊":
-      return "3/5";
-    case "🥲":
-      return "2/5";
-    case "🤬":
-      return "1/5";
-    default:
-      return "Unknown";
-  }
 }
