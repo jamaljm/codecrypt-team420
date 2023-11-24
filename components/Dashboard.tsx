@@ -43,6 +43,10 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { set } from "firebase/database";
+import { afterEach } from "node:test";
+
+
+
 
 type Shop = {
   shop_name: string;
@@ -148,9 +152,16 @@ export default function Dashboard() {
             image,
         }
       )
-      .then((response: any) => {
+      .then(async(response: any) => {
         console.log(response);
         toast.success("menu created");
+
+        const dbInst = collection(database, "items");
+        const volunteerDocRef = doc(dbInst, user.email.toString());
+        await setDoc(volunteerDocRef, {
+          shop_email: user.email,
+          items: response.data,
+        });
         
         setLoading(false);
       })

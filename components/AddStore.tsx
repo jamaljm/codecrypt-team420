@@ -40,33 +40,6 @@ export default function AddStore() {
   const [image, setImage] = useState("");
   const [product, setProduct] = useState("");
 
-  const handleCreate = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("shop")
-        .insert([
-          {
-            shop_name: name,
-            shop_id: domain,
-            shop_type: type,
-            shop_email: user.email,
-            shop_logo: image,
-            shop_product: product,
-          },
-        ])
-        .select("*");
-      console.log(data);
-      if (error) {
-        console.log(error);
-        console.error("Error adding data to Supabase:", error);
-      } else {
-        console.log("Data added successfully:", data);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   const handleAddDoc = async () => {
     setLoading(true);
