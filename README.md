@@ -40,6 +40,10 @@ This project was created for CodeCrypt by Team 420
    <img align="centre" src="https://i.imgur.com/KuhiOmF.jpg" alt="Screenshot" width="90%">
   <br>
 
+    <br>
+   <img align="centre" src="https://i.imgur.com/WZnZdeH.jpg" alt="Screenshot" width="90%">
+  <br>
+
 <div >
   
   <img src="https://i.imgur.com/M6OBuwZ.jpg" alt="Screenshot" width="30%">  
@@ -55,7 +59,6 @@ This project was created for CodeCrypt by Team 420
   </br>
   </br>
 
-<img src="https://i.imgur.com/fKJifsD.png" alt="Screenshot" width="100%">  
 
 </br>
 
