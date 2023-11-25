@@ -35,40 +35,18 @@ This project was created for CodeCrypt by Team 420
 
   
 ## Features
-Here we technically desgined a system which can solve the above challenges.
 
   <br>
-   <img align="centre" src="https://i.imgur.com/9x81dSQ.png" alt="Screenshot" width="90%">
+   <img align="centre" src="https://i.imgur.com/KuhiOmF.jpg" alt="Screenshot" width="90%">
   <br>
-
-### Curating Reliable Data
- We aggregate a diverse range of high-quality multimedia resources, including videos 📹, research papers 📄, images 🖼️, and data graphs 📈, from authoritative sources within the financial domain.
-### WhatsApp Interaction🤖
-Utilizing an interactive chatbot on WhatsApp, users engage in natural language conversations similar to traditional chats, ensuring a familiar and user-friendly process.
-### Content Dissemination: 📦🤖
-Deriving insights from user preferences and data credibility, the AI chatbot creates tailor-made content packages. These include AI-generated videos 🎥, concise summaries ✍️, interactive data visualizations 📊, like graphs, and pertinent source links 🔗.
-### Other Features
-Quick, accurate explanations ✅, curated summaries 📑, downloadable PDFs 📥 (comprehensive explanations with AI-generated images 🖼️ and video modules 📹), and resource links 🔗, all guaranteeing dependable personalized learning. 📚🎓
-
-Financial insights 📊. Imagine asking about Zomato's 3-year performance, and receiving a comprehensive response with a performance graph 📈 showcasing the company's data history, along with a detailed description. All of this is provided in an inclusive experience 🌍, supporting multiple languages. 🌐📊📈📝
-
-Custom document-based analysis 📄🔍. Investors can effortlessly upload a report and request a brief summary of the company's upcoming plans extracted from the PDF. Our system bridges knowledge gaps by automatically generating relevant search queries, ensuring a seamless process. 💼📊🔍
-
-🎥🗣️ Video explanations in your preferred language. Simply ask, "Can you explain the video in Hindi?" Our system seamlessly generates the video in your chosen language using AI. 🤖🎥🗣️🌐
-
-🗣️🌍 Our bot welcomes queries in any natural language, granting users the freedom to ask questions in the language they feel most at ease with. 🌐🤖
- 
-  
 
 <div >
   
-  <img src="https://i.imgur.com/E3FTpvn.jpg" alt="Screenshot" width="30%">  
+  <img src="https://i.imgur.com/M6OBuwZ.jpg" alt="Screenshot" width="30%">  
   
  
-  <img src="https://i.imgur.com/f6aHr5V.jpg" alt="Screenshot" width="30%">
+  <img src="https://i.imgur.com/XiH6RsI.jpg" alt="Screenshot" width="30%">
 
-  
-  <img src="https://i.imgur.com/UX70oRD.jpg" alt="Screenshot" width="30%">
 
  </div> 
   
