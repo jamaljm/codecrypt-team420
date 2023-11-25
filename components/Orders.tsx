@@ -245,7 +245,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </Link>
-                <Link href="/dashboardaccept">
+                <Link href="/accepted">
                   <div className="bg-white border border-red-200 rounded-xl">
                     <div className="px-5 py-4">
                       <p className="text-sm font-medium tracking-wider text-red-700 uppercase">
@@ -267,7 +267,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </Link>
-                <Link href="/dashboarddeliver">
+                <Link href="/delivered">
                   <div className="bg-white border border-red-200 rounded-xl">
                     <div className="px-5 py-4">
                       <p className="text-sm font-medium tracking-wider text-red-700 uppercase">
