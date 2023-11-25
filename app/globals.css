@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'mapbox-gl/dist/mapbox-gl.css';
 
 @layer base {
   :root {
@@ -9,7 +10,14 @@
     --btn-background-hover: 200 10% 89%;
     --foreground: 200 50% 3%;
   }
-
+.marker {
+  background-image: url("/gif.gif");
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
   @media (prefers-color-scheme: dark) {
     :root {
       --background: 200 50% 3%;

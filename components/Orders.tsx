@@ -6,6 +6,7 @@ import { CallData } from "./type/calls";
 import { realtime } from "../firebase";
 import { ref, set } from "firebase/database";
 import { useAuth } from "../Authcontext";
+import Map from "./Map";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -459,13 +460,17 @@ export default function Dashboard() {
 
                                   <div className="mt-6  rounded-2xl">
                                     <button
-                                      onClick={() => handleAccept(call.unique_id)}
+                                      onClick={() =>
+                                        handleAccept(call.unique_id)
+                                      }
                                       className="bg-green-400 text-white px-9 py-2 rounded-2xl "
                                     >
                                       Accept
                                     </button>
                                     <button
-                                      onClick={() => handleCancel(call.unique_id)}
+                                      onClick={() =>
+                                        handleCancel(call.unique_id)
+                                      }
                                       className="bg-red-400 mt-2 text-white px-9 py-2 rounded-2xl "
                                     >
                                       Cancel
@@ -473,6 +478,16 @@ export default function Dashboard() {
                                   </div>
                                 </div>
                               </div>
+                            </div>
+                          )}
+                          {showOrderDetails && selectedOrderIndex === index && (
+                            //  map
+                            <div className=" mb-8 relative w-full rounded-3xl h-80">
+                              {" "}
+                              <Map
+                                lat={call.coordinates.lat}
+                                lng={call.coordinates.lng}
+                              />
                             </div>
                           )}
                         </div>

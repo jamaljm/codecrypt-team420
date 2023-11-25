@@ -61,7 +61,7 @@ export default function AddStore() {
 
       setLoading(false);
       setsubmitdone(true);
-      router.refresh;
+      window.location.reload();
     } catch (error) {
       toast.error("Something went wrong");
       console.error("error, ", error);
