@@ -12,20 +12,17 @@
 
 <h3 align="center">Your virtual restaurant is ready in minutes</h3>
 
-In today's age of abundant information investors find it difficult to find accurate and reliable information on securities markets. A lot of the info are not verified and investors have to spend a lot of time curating and filtering. Also accessing and scouring various sources takes time and effort. Often people with less technical knowledge find this process very tiresome. A lot of this content is not available in native languages which introduces a language barrier to entry. 📊⏳💼🔍😫🌍
+We specialize in revolutionizing how small businesses, particularly restaurants, manage their delivery services. Through our innovative platform, we provide a dedicated digital space for each establishment, complete with a cutting-edge smart number driven by artificial intelligence. 🌟 This unique feature allows customers to effortlessly inquire about menu items, make reservations, and place orders with ease. 🍽️ It's akin to having a knowledgeable and supportive friend for your restaurant, simplifying the customer experience and enhancing the overall efficiency of delivery operations. 🚀 With our solution, we aim to empower restaurants, fostering seamless connections between businesses and their patrons in the ever-evolving digital landscape. 🌐
 
 ## KEY PROBLEMS
-- Information Accuracy and Reliability📊
-- Time-Consuming Curating and Filtering⏳
-- Accessing Multiple Sources💼 
+- Delivery Time Management⏰
+- Order Accuracy and Communication📋
+- Menu Management and Updates🍽️
 - Technical Knowledge Barrier🕵️‍♂️
-- Tiresome Process😫
-- Language Barrier🌍 
-
-
+ 
 ## About
 
-This project was created for Code by Team 420 
+This project was created for CodeCrypt by Team 420 
 
 ## Team Members:
 
