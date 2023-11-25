@@ -8,6 +8,8 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
+
 import { Input } from "@nextui-org/react";
 import { useAuth } from "../Authcontext";
 import { useState } from "react";
@@ -39,6 +41,7 @@ export default function AddStore() {
   const [image, setImage] = useState("");
   const [product, setProduct] = useState("");
 
+  const router = useRouter();
 
   const handleAddDoc = async () => {
     setLoading(true);
@@ -58,6 +61,7 @@ export default function AddStore() {
 
       setLoading(false);
       setsubmitdone(true);
+      router.refresh;
     } catch (error) {
       toast.error("Something went wrong");
       console.error("error, ", error);

@@ -55,7 +55,7 @@ export default function Dashboard() {
   const handleAccept = (unique_id: string) => {
     const orderStatusRef = ref(realtime, `orders/${unique_id}/status`);
 
-    set(orderStatusRef, "accepted")
+    set(orderStatusRef, "delivered")
       .then(() => {
         console.log("Order status updated to accepted");
 
@@ -80,31 +80,7 @@ export default function Dashboard() {
           (call) => call.unique_id === unique_id
         );
 
-        if (selectedCall) {
-          const { phone_no } = selectedCall;
-
-          const message = `We can't deliver this item now.. 😔 Sorry for the inconvenience! 🙇‍♂️`;
-
-          const requestBody = {
-            number: "+" + phone_no,
-            text: message,
-          };
-
-          fetch("https://gecbackend-production.up.railway.app/send", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-          })
-            .then((response) => {
-              console.log("POST request sent successfully");
-              // Handle the response if needed
-            })
-            .catch((error) => {
-              console.error("Failed to send the POST request:", error);
-            });
-        }
+       
       })
       .catch((error) => {
         console.error("Failed to update order status:", error);
@@ -177,7 +153,7 @@ export default function Dashboard() {
           </div>
         </div>
       </header>
-      <div className="bg-[#762525] flex min-h-screen w-full">
+      <div className="bg-[#9d5c5c] flex min-h-screen w-full">
         <div
           className="flex w-full bg-[#762525] sm:w-64 m-0 p-0"
           style={{ flex: 0.6 }}
@@ -327,7 +303,7 @@ export default function Dashboard() {
                           <span className="sr-only">Actions</span>
                         </div>
                       </div>
-                      {filteredCalls.map((call, index) => (
+                      {filteredCalls3.map((call, index) => (
                         <div>
                           <div className="divide-y divide-red-200">
                             <div
@@ -459,13 +435,17 @@ export default function Dashboard() {
 
                                   <div className="mt-6  rounded-2xl">
                                     <button
-                                      onClick={() => handleAccept(call.unique_id)}
+                                      onClick={() =>
+                                        handleAccept(call.unique_id)
+                                      }
                                       className="bg-green-400 text-white px-9 py-2 rounded-2xl "
                                     >
                                       Accept
                                     </button>
                                     <button
-                                      onClick={() => handleCancel(call.unique_id)}
+                                      onClick={() =>
+                                        handleCancel(call.unique_id)
+                                      }
                                       className="bg-red-400 mt-2 text-white px-9 py-2 rounded-2xl "
                                     >
                                       Cancel

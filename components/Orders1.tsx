@@ -55,7 +55,7 @@ export default function Dashboard() {
   const handleAccept = (unique_id: string) => {
     const orderStatusRef = ref(realtime, `orders/${unique_id}/status`);
 
-    set(orderStatusRef, "accepted")
+    set(orderStatusRef, "delivered")
       .then(() => {
         console.log("Order status updated to accepted");
 
@@ -218,7 +218,7 @@ export default function Dashboard() {
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
               <div className="grid max-w-5xl grid-cols-1 gap-12 mx-auto sm:grid-cols-2 lg:grid-cols-3">
                 <Link href="/dashboard">
-                  <div className="bg-white border shadow-xl scale-105  border-red-200 rounded-xl">
+                  <div className="bg-white border border-red-200 rounded-xl">
                     <div className="px-5 py-4">
                       <p className="text-sm font-medium tracking-wider text-red-700 uppercase">
                         <svg
@@ -246,7 +246,7 @@ export default function Dashboard() {
                   </div>
                 </Link>
                 <Link href="/dashboardaccept">
-                  <div className="bg-white border border-red-200 rounded-xl">
+                  <div className="bg-white border shadow-xl scale-105  border-red-200 rounded-xl">
                     <div className="px-5 py-4">
                       <p className="text-sm font-medium tracking-wider text-red-700 uppercase">
                         <img
@@ -327,7 +327,7 @@ export default function Dashboard() {
                           <span className="sr-only">Actions</span>
                         </div>
                       </div>
-                      {filteredCalls.map((call, index) => (
+                      {filteredCalls2.map((call, index) => (
                         <div>
                           <div className="divide-y divide-red-200">
                             <div
@@ -459,13 +459,17 @@ export default function Dashboard() {
 
                                   <div className="mt-6  rounded-2xl">
                                     <button
-                                      onClick={() => handleAccept(call.unique_id)}
+                                      onClick={() =>
+                                        handleAccept(call.unique_id)
+                                      }
                                       className="bg-green-400 text-white px-9 py-2 rounded-2xl "
                                     >
                                       Accept
                                     </button>
                                     <button
-                                      onClick={() => handleCancel(call.unique_id)}
+                                      onClick={() =>
+                                        handleCancel(call.unique_id)
+                                      }
                                       className="bg-red-400 mt-2 text-white px-9 py-2 rounded-2xl "
                                     >
                                       Cancel

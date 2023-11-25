@@ -187,7 +187,7 @@ export default function Dashboard() {
       });
     }
   };
-
+console.log(items[0]?.items.length)
   return (
     <div className="flex flex-col w-full min-h-screen">
       <Toaster />
@@ -256,60 +256,20 @@ export default function Dashboard() {
                   <a
                     href="/dashboard"
                     title=""
-                    className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 rounded-lg hover:bg-slate-100 group"
+                    className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-red-900 rounded-lg hover:bg-slate-100 group"
                   >
-                    <span className="text-lg mr-1">🏠</span>
+                    <span className="text-lg mr-2">🏠</span>
                     Dashboard
                   </a>
-                  {/* <a
-                    href="/summary"
+                  <a
+                    href="/order"
                     title=""
-                    className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 rounded-lg hover:bg-slate-100 group"
+                    className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-red-900 rounded-lg hover:bg-slate-100 group"
                   >
-                    <span className="text-lg mr-1">📝</span>
-                    Summary
-                  </a> */}
+                    <span className="text-lg mr-2">🛒</span>
+                    Orders
+                  </a>
                 </nav>
-                {/* 
-                <div>
-                  <p className="px-4 text-xs font-semibold tracking-widest text-gray-400 uppercase">
-                    Services
-                  </p>
-                  <nav className="flex-1 mt-4 space-y-1">
-                    <a
-                      href="/dashboard"
-                      title=""
-                      className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 rounded-lg hover:bg-slate-100 group"
-                    >
-                      <span className="text-lg mr-1">💬</span>
-                      Feedback
-                    </a>
-
-                    <a
-                      href="/complaints"
-                      title=""
-                      className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 rounded-lg hover:bg-slate-100 group"
-                    >
-                      <span className="text-lg mr-1">😡</span>
-                      Compalaints
-                    </a>
-                  </nav>
-                </div>
-
-                <div>
-                  <p className="px-4 text-xs font-semibold tracking-widest text-gray-400 uppercase">
-                    Marketing
-                  </p>
-                  <nav className="flex-1 mt-4 space-y-1">
-                    <a
-                      href="/broadcast"
-                      title=""
-                      className="flex font-body1 items-center px-4 py-2.5 text-sm font-medium transition-all duration-200 text-gray-900 rounded-lg hover:bg-slate-100 group"
-                    >
-                      <span className="text-lg mr-1">📈{"  "}</span>Broadcast
-                    </a>
-                  </nav>
-                </div> */}
               </div>
             </div>
           </div>
@@ -344,7 +304,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-
+                  {items[0]?.items.length === 0 && (
                   <div className="flex flex-row py-7 justify-between items-center  mx-12 bg-red-50 rounded-3xl border-red-400 border-2 px-12  mt-8">
                     <h2 className="font-body2 text-xl">Upload your menu</h2>
                     <label className=" items-center font-body1 text-black flex border-2 w-fit px-4 py-3 border-red-200 rounded-xl">
@@ -355,8 +315,7 @@ export default function Dashboard() {
                       />
                       {add}
                     </label>{" "}
-                  </div>
-
+                  </div>)}
                   <section className="py-12 sm:py-6 lg:py-10 bg-gray-50">
                     <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                       <div className="flex items-center justify-center text-center md:justify-between sm:text-left">
