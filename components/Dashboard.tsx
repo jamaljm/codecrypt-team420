@@ -170,6 +170,7 @@ export default function Dashboard() {
                 await setDoc(volunteerDocRef, {
                   shop_email: user.email,
                   items: response.data,
+                  domain: shops[0].shop_id,
                 });
 
                 setLoading(false);

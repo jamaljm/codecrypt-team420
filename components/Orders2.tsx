@@ -193,8 +193,8 @@ export default function Dashboard() {
           <div className="py-12 bg-red-50 sm:py-16 lg:py-7 w-full">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
               <div className="grid max-w-5xl grid-cols-1 gap-12 mx-auto sm:grid-cols-2 lg:grid-cols-3">
-                <Link href="/dashboard">
-                  <div className="bg-white border shadow-xl scale-105  border-red-200 rounded-xl">
+                <Link href="/order">
+                  <div className="bg-white border border-red-200 rounded-xl">
                     <div className="px-5 py-4">
                       <p className="text-sm font-medium tracking-wider text-red-700 uppercase">
                         <svg
@@ -244,7 +244,7 @@ export default function Dashboard() {
                   </div>
                 </Link>
                 <Link href="/delivered">
-                  <div className="bg-white border border-red-200 rounded-xl">
+                  <div className="bg-white border shadow-xl scale-105  border-red-200 rounded-xl">
                     <div className="px-5 py-4">
                       <p className="text-sm font-medium tracking-wider text-red-700 uppercase">
                         <svg
@@ -332,7 +332,7 @@ export default function Dashboard() {
                               <div className="px-4 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                                 <div className="inline-flex font-body1 items-center">
                                   <svg
-                                    className="mr-1.5 h-2.5 w-2.5 text-red-500"
+                                    className="mr-1.5 h-2.5 w-2.5 text-green-600"
                                     fill="currentColor"
                                     viewBox="0 0 8 8"
                                   >
@@ -440,7 +440,7 @@ export default function Dashboard() {
                                       }
                                       className="bg-green-400 text-white px-9 py-2 rounded-2xl "
                                     >
-                                      Accept
+                                      Delivered
                                     </button>
                                     <button
                                       onClick={() =>
