@@ -6,11 +6,11 @@
   <br>
   
   <br>
-       <img src="https://i.imgur.com/DYfW4NC.png" width="40%">
+       <img src="https://i.imgur.com/7YgcEjx.png" width="40%">
   <br>
 </h1>
 
-<h3 align="center">Investing Made Easy: Unveiling the Truths Behind the Numbers!</h3>
+<h3 align="center">Your virtual restaurant is ready in minutes</h3>
 
 In today's age of abundant information investors find it difficult to find accurate and reliable information on securities markets. A lot of the info are not verified and investors have to spend a lot of time curating and filtering. Also accessing and scouring various sources takes time and effort. Often people with less technical knowledge find this process very tiresome. A lot of this content is not available in native languages which introduces a language barrier to entry. 📊⏳💼🔍😫🌍
 
@@ -25,7 +25,7 @@ In today's age of abundant information investors find it difficult to find accur
 
 ## About
 
-This project was created for Investors-Hack by Team 420 
+This project was created for Code by Team 420 
 
 ## Team Members:
 
