@@ -42,6 +42,7 @@ import {
 } from "firebase/firestore";
 import { set } from "firebase/database";
 import { afterEach } from "node:test";
+import { Spinner } from "@nextui-org/react";
 
 type Shop = {
   shop_name: string;
@@ -172,7 +173,7 @@ export default function Dashboard() {
                   items: response.data,
                   domain: shops[0].shop_id,
                 });
-
+                window.location.reload();
                 setLoading(false);
               })
               .catch((error: Error) => {
@@ -188,7 +189,7 @@ export default function Dashboard() {
       });
     }
   };
-console.log(items[0]?.items.length)
+  console.log("hii", items[0]?.items?.length);
   return (
     <div className="flex flex-col w-full min-h-screen">
       <Toaster />
@@ -305,76 +306,86 @@ console.log(items[0]?.items.length)
                       </div>
                     </div>
                   </div>
-                  {items[0]?.items.length === 0 && (
-                  <div className="flex flex-row py-7 justify-between items-center  mx-12 bg-red-50 rounded-3xl border-red-400 border-2 px-12  mt-8">
-                    <h2 className="font-body2 text-xl">Upload your menu</h2>
-                    <label className=" items-center font-body1 text-black flex border-2 w-fit px-4 py-3 border-red-200 rounded-xl">
-                      <input
-                        onChange={(event) => handleFileInputChange(event)}
-                        type="file"
-                        className="block w-full text-sm text-red-700 font-body file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
-                      />
-                      {add}
-                    </label>{" "}
-                  </div>)}
-                  <section className="py-12 sm:py-6 lg:py-10 bg-gray-50">
-                    <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                      <div className="flex items-center justify-center text-center md:justify-between sm:text-left">
-                        <h2 className="text-2xl font-body1 font-bold text-gray-900 sm:text-3xl">
-                          Your shop menu{" "}
-                        </h2>
-                      </div>
-
-                      <div className="grid grid-cols-1 mt-8 text-center sm:mt-12 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-6 sm:text-left">
-                        {items[0].items.map((item: any) => (
-                          <div className="relative group">
-                            <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
-                              <img
-                                className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
-                                src={
-                                  item.image_url
-                                    ? item.image_url
-                                    : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D"
-                                }
-                                alt=""
-                              />
-                            </div>
-
-                            <h3 className="mt-5 text-lg font-body4 font-semibold  text-gray-900">
-                              {item.item_name}
-                            </h3>
-                            <p className="text-sm font-body1 text-gray-800 font-medium mt-1.5">
-                              ₹ {item.price}{" "}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="block mt-8 text-center md:hidden">
-                        <a
-                          href="#"
-                          title=""
-                          className="inline-flex items-center p-1 -m-1 text-xs font-bold tracking-wide text-gray-400 uppercase transition-all duration-200 rounded hover:text-gray-900 focus:ring-2 focus:text-gray-900 focus:ring-gray-900 focus:ring-offset-2 focus:outline-none"
-                          role="button"
-                        >
-                          All Categories
-                          <svg
-                            className="w-4 h-4 ml-1.5 -mt-0.5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M9 5l7 7-7 7"
-                            ></path>
-                          </svg>
-                        </a>
-                      </div>
+                  {!items[0]?.items.length && (
+                    <div className="flex flex-row py-7 justify-between items-center  mx-12 bg-red-50 rounded-3xl border-red-400 border-2 px-12  mt-8">
+                      {!loading && (
+                        <>
+                          <h2 className="font-body2 text-xl">
+                            Upload your menu
+                          </h2>
+                          <label className=" items-center font-body1 text-black flex border-2 w-fit px-4 py-3 border-red-200 rounded-xl">
+                            <input
+                              onChange={(event) => handleFileInputChange(event)}
+                              type="file"
+                              className="block w-full text-sm text-red-700 font-body file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-100 file:text-red-700 hover:file:bg-blue-100"
+                            />
+                            {add}
+                          </label>
+                        </>
+                      )}
+                      {loading && <Spinner color="danger" />}
                     </div>
-                  </section>
+                  )}
+                  {items[0]?.items.length && (
+                    <section className="py-12 sm:py-6 lg:py-10 bg-gray-50">
+                      <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+                        <div className="flex items-center justify-center text-center md:justify-between sm:text-left">
+                          <h2 className="text-2xl font-body1 font-bold text-gray-900 sm:text-3xl">
+                            Your shop menu{" "}
+                          </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 mt-8 text-center sm:mt-12 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-6 sm:text-left">
+                          {items[0]?.items?.map((item: any) => (
+                            <div className="relative group">
+                              <div className="overflow-hidden aspect-w-4 aspect-h-2 rounded-2xl">
+                                <img
+                                  className="object-cover w-full h-full transition-all duration-300 group-hover:scale-125"
+                                  src={
+                                    item.image_url
+                                      ? item.image_url
+                                      : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D"
+                                  }
+                                  alt=""
+                                />
+                              </div>
+
+                              <h3 className="mt-5 text-lg font-body4 font-semibold  text-gray-900">
+                                {item.item_name}
+                              </h3>
+                              <p className="text-sm font-body1 text-gray-800 font-medium mt-1.5">
+                                ₹ {item.price}{" "}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="block mt-8 text-center md:hidden">
+                          <a
+                            href="#"
+                            title=""
+                            className="inline-flex items-center p-1 -m-1 text-xs font-bold tracking-wide text-gray-400 uppercase transition-all duration-200 rounded hover:text-gray-900 focus:ring-2 focus:text-gray-900 focus:ring-gray-900 focus:ring-offset-2 focus:outline-none"
+                            role="button"
+                          >
+                            All Categories
+                            <svg
+                              className="w-4 h-4 ml-1.5 -mt-0.5"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5l7 7-7 7"
+                              ></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
+                    </section>
+                  )}
                 </div>
               </>
             )}
