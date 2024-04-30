@@ -465,7 +465,7 @@ export default function Dashboard() {
                                       }
                                       className="bg-green-400 text-white px-9 py-2 rounded-2xl "
                                     >
-                                      Accept
+                                      Delivered
                                     </button>
                                     <button
                                       onClick={() =>
